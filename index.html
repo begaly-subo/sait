@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC BUILDER — Собери свой ПК</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial,sans-serif;
+  background:#080d18;color:#f1f5f9;
+}
+header{
+  padding:22px 7%;
+  display:flex;justify-content:space-between;align-items:center;
+  background:#101827;border-bottom:1px solid #263449;
+  position:sticky;top:0;z-index:10;
+}
+.logo{font-size:25px;font-weight:900;color:#60a5fa}
+.logo span{color:white}
+header a{color:#cbd5e1;text-decoration:none;margin-left:22px}
+.hero{
+  padding:65px 7%;text-align:center;
+  background:radial-gradient(circle at center,#17345e,#080d18 70%);
+}
+.hero h1{font-size:clamp(32px,6vw,55px);margin-bottom:15px}
+.hero h1 span{color:#60a5fa}
+.hero p{color:#9caec5;font-size:17px}
+.container{padding:35px 7%;max-width:1500px;margin:auto}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:25px}
+.section-title{font-size:25px;margin-bottom:20px}
+.categories{
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px
+}
+.categories button{
+  border:1px solid #334155;background:#111c2e;color:#cbd5e1;
+  padding:11px 17px;border-radius:9px;cursor:pointer
+}
+.categories button.active,.categories button:hover{
+  background:#2563eb;border-color:#2563eb;color:white
+}
+.products{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px
+}
+.card{
+  background:#111c2e;border:1px solid #25344a;
+  border-radius:14px;overflow:hidden;transition:.2s
+}
+.card:hover{transform:translateY(-4px);border-color:#3b82f6}
+.card img{
+  width:100%;height:175px;object-fit:contain;
+  background:#172438;padding:12px
+}
+.card-content{padding:17px}
+.card h3{font-size:17px;margin-bottom:9px}
+.card p{font-size:13px;color:#9caec5;line-height:1.5;min-height:38px}
+.price{font-size:21px;color:#60a5fa;font-weight:bold;margin:14px 0}
+.card button{
+  width:100%;padding:12px;border:0;border-radius:8px;
+  background:#2563eb;color:white;font-weight:bold;cursor:pointer
+}
+.card button:hover{background:#1d4ed8}
+.card button.selected{background:#16a34a}
+.summary{
+  background:#111c2e;border:1px solid #29384e;
+  border-radius:15px;padding:22px;height:fit-content;
+  position:sticky;top:95px
+}
+.summary h2{margin-bottom:20px}
+.part{
+  padding:12px 0;border-bottom:1px solid #29384e;
+  font-size:14px;color:#cbd5e1
+}
+.part strong{display:block;color:white;margin-bottom:5px}
+.total{font-size:25px;font-weight:bold;color:#60a5fa;margin:22px 0}
+.clear{
+  width:100%;padding:12px;background:#27364d;color:white;
+  border:0;border-radius:8px;cursor:pointer
+}
+.compatibility{
+  margin-top:15px;padding:12px;border-radius:8px;
+  background:#172438;color:#cbd5e1;font-size:13px;line-height:1.5
+}
+footer{
+  text-align:center;padding:30px;color:#64748b;
+  border-top:1px solid #263449;margin-top:40px
+}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+  .summary{position:static}
+}
+@media(max-width:520px){
+  header{padding:17px 5%}
+  header nav{display:none}
+  .container{padding:25px 5%}
+  .products{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">PC<span>BUILDER</span></div>
+  <nav>
+    <a href="#builder">Конструктор</a>
+    <a href="#about">О проекте</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>СОБЕРИ СВОЙ <span>КОМПЬЮТЕР</span></h1>
+  <p>Выбирай комплектующие и создай ПК своей мечты.</p>
+</section>
+
+<main class="container" id="builder">
+  <h2 class="section-title">🖥 Конструктор компьютера</h2>
+
+  <div class="categories" id="categories"></div>
+
+  <div class="layout">
+    <div class="products" id="products"></div>
+
+    <aside class="summary">
+      <h2>Твоя сборка</h2>
+      <div id="selected"></div>
+      <div class="total">Итого: <span id="total">0</span> сом</div>
+      <div class="compatibility" id="compatibility">
+        Выбери комплектующие, чтобы увидеть информацию о сборке.
+      </div>
+      <br>
+      <button class="clear" onclick="clearBuild()">Очистить сборку</button>
+    </aside>
+  </div>
+</main>
+
+<section class="container" id="about">
+  <h2 class="section-title">О PC BUILDER</h2>
+  <p style="color:#9caec5;line-height:1.8">
+    PC BUILDER — интерактивный конструктор компьютеров.
+    Выбирай процессор, видеокарту, оперативную память,
+    материнскую плату, накопитель, блок питания и корпус.
+    Сайт подсчитает стоимость выбранных комплектующих.
+  </p>
+</section>
+
+<footer>PC BUILDER © 2026 — Создай свой компьютер</footer>
+
+<script>
+const categories = [
+  "Все","Процессоры","Видеокарты","Материнские платы",
+  "Оперативная память","Накопители","Блоки питания","Корпуса"
+];
+
+const products = [
+ {id:1,cat:"Процессоры",name:"AMD Ryzen 5 5600",
+  desc:"6 ядер / 12 потоков, AM4",price:10500,
+  img:"https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600"},
+ {id:2,cat:"Процессоры",name:"AMD Ryzen 7 5800X",
+  desc:"8 ядер / 16 потоков, AM4",price:16500,
+  img:"https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600"},
+ {id:3,cat:"Процессоры",name:"Intel Core i5-12400F",
+  desc:"6 ядер / 12 потоков, LGA1700",price:12500,
+  img:"https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600"},
+ {id:4,cat:"Процессоры",name:"Intel Core i7-12700K",
+  desc:"12 ядер / 20 потоков, LGA1700",price:23500,
+  img:"https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600"},
+
+ {id:5,cat:"Видеокарты",name:"NVIDIA RTX 3060",
+  desc:"12 GB GDDR6",price:25500,
+  img:"https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600"},
+ {id:6,cat:"Видеокарты",name:"NVIDIA RTX 4060",
+  desc:"8 GB GDDR6",price:29500,
+  img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600"},
+ {id:7,cat:"Видеокарты",name:"NVIDIA RTX 4070",
+  desc:"12 GB GDDR6X",price:52000,
+  img:"https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600"},
+ {id:8,cat:"Видеокарты",name:"AMD RX 7600",
+  desc:"8 GB GDDR6",price:27000,
+  img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600"},
+
+ {id:9,cat:"Материнские платы",name:"MSI B550M PRO",
+  desc:"AM4, DDR4",price:8500,
+  img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600"},
+ {id:10,cat:"Материнские платы",name:"ASUS PRIME B660M",
+  desc:"LGA1700, DDR4",price:11000,
+  img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600"},
+ {id:11,cat:"Материнские платы",name:"MSI B760 GAMING",
+  desc:"LGA1700, DDR5",price:14500,
+  img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600"},
+
+ {id:12,cat:"Оперативная память",name:"Kingston Fury 16GB",
+  desc:"2 × 8 GB DDR4",price:4200,
+  img:"https://images.unsplash.com/photo-1562976540-1502c2145186?w=600"},
+ {id:13,cat:"Оперативная память",name:"Kingston Fury 32GB",
+  desc:"2 × 16 GB DDR4",price:7200,
+  img:"https://images.unsplash.com/photo-1562976540-1502c2145186?w=600"},
+ {id:14,cat:"Оперативная память",name:"Corsair Vengeance 32GB",
+  desc:"2 × 16 GB DDR5",price:9500,
+  img:"https://images.unsplash.com/photo-1562976540-1502c2145186?w=600"},
+
+ {id:15,cat:"Накопители",name:"Kingston NV2 500GB",
+  desc:"M.2 NVMe SSD",price:3500,
+  img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600"},
+ {id:16,cat:"Накопители",name:"Samsung 990 EVO 1TB",
+  desc:"M.2 NVMe SSD",price:7500,
+  img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600"},
+ {id:17,cat:"Накопители",name:"WD Blue 2TB",
+  desc:"Жёсткий диск HDD",price:5500,
+  img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600"},
+
+ {id:18,cat:"Блоки питания",name:"DeepCool 600W",
+  desc:"600W, 80+ Bronze",price:5500,
+  img:"https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600"},
+ {id:19,cat:"Блоки питания",name:"Corsair 750W",
+  desc:"750W, 80+ Gold",price:10500,
+  img:"https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600"},
+
+ {id:20,cat:"Корпуса",name:"DeepCool MATREXX",
+  desc:"Mid Tower, стеклянная панель",price:6500,
+  img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600"},
+ {id:21,cat:"Корпуса",name:"NZXT H5 Flow",
+  desc:"Mid Tower, хорошая вентиляция",price:10500,
+  img:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600"}
+];
+
+let activeCategory="Все";
+let build={};
+
+function renderCategories(){
+ document.getElementById("categories").innerHTML=
+ categories.map(c=>`
+ <button class="${activeCategory===c?'active':''}"
+ onclick="setCategory('${c}')">${c}</button>
+ `).join("");
+}
+
+function setCategory(cat){
+ activeCategory=cat;
+ renderCategories();
+ renderProducts();
+}
+
+function renderProducts(){
+ const list=activeCategory==="Все"
+ ?products:products.filter(p=>p.cat===activeCategory);
+
+ document.getElementById("products").innerHTML=list.map(p=>`
+ <div class="card">
+   <img src="${p.img}" alt="${p.name}"
+    onerror="this.style.display='none'">
+   <div class="card-content">
+     <h3>${p.name}</h3>
+     <p>${p.desc}</p>
+     <div class="price">${p.price.toLocaleString("ru-RU")} сом</div>
+     <button class="${build[p.cat]?.id===p.id?'selected':''}"
+       onclick="choose(${p.id})">
+       ${build[p.cat]?.id===p.id?'✓ Выбрано':'Выбрать'}
+     </button>
+   </div>
+ </div>
+ `).join("");
+}
+
+function choose(id){
+ const p=products.find(x=>x.id===id);
+ build[p.cat]=p;
+ updateBuild();
+ renderProducts();
+}
+
+function updateBuild(){
+ const values=Object.values(build);
+ const total=values.reduce((sum,p)=>sum+p.price,0);
+
+ document.getElementById("selected").innerHTML=
+ categories.filter(c=>c!=="Все").map(cat=>{
+   const p=build[cat];
+   return `<div class="part">
+     <strong>${cat}</strong>
+     ${p?p.name+" — "+p.price.toLocaleString("ru-RU")+" сом":"Не выбрано"}
+   </div>`;
+ }).join("");
+
+ document.getElementById("total").textContent=
+ total.toLocaleString("ru-RU");
+
+ checkCompatibility();
+}
+
+function checkCompatibility(){
+ const cpu=build["Процессоры"];
+ const board=build["Материнские платы"];
+ const ram=build["Оперативная память"];
+ const messages=[];
+
+ if(cpu&&board){
+   const cpuSocket=cpu.desc.includes("AM4")?"AM4":"LGA1700";
+   const boardSocket=board.desc.includes("AM4")?"AM4":"LGA1700";
+   if(cpuSocket!==boardSocket)
+     messages.push("⚠️ Процессор и материнская плата имеют разные сокеты.");
+   else messages.push("✓ Сокет процессора и платы совпадает.");
+ }
+
+ if(board&&ram){
+   const boardDDR=board.desc.includes("DDR5")?"DDR5":"DDR4";
+   const ramDDR=ram.desc.includes("DDR5")?"DDR5":"DDR4";
+   if(boardDDR!==ramDDR)
+     messages.push("⚠️ Тип оперативной памяти не подходит к плате.");
+   else messages.push("✓ Тип оперативной памяти совпадает.");
+ }
+
+ if(!cpu||!board||!ram)
+   messages.push("Для полной проверки выбери процессор, плату и память.");
+
+ document.getElementById("compatibility").innerHTML=
+ "<strong>Проверка сборки:</strong><br>"+messages.join("<br>");
+}
+
+function clearBuild(){
+ build={};
+ updateBuild();
+ renderProducts();
+}
+
+renderCategories();
+renderProducts();
+updateBuild();
+</script>
+
+</body>
+</html>
